@@ -1,8 +1,11 @@
 package com.example.Gestiondereservationdesplacesunecooperative.service;
 
+import com.example.Gestiondereservationdesplacesunecooperative.entity.Place;
 import com.example.Gestiondereservationdesplacesunecooperative.entity.Voiture;
 import com.example.Gestiondereservationdesplacesunecooperative.entity.TypeVoiture;
+import com.example.Gestiondereservationdesplacesunecooperative.enums.OccupationStatus;
 import com.example.Gestiondereservationdesplacesunecooperative.exception.AppException;
+import com.example.Gestiondereservationdesplacesunecooperative.repository.PlaceRepository;
 import com.example.Gestiondereservationdesplacesunecooperative.repository.VoitureRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -11,12 +14,13 @@ import java.util.List;
 
 @Service
 @RequiredArgsConstructor
-@Slf4j // Permet d'utiliser log.info pour les messages de succès
+@Slf4j
 public class VoitureService {
 
     private final VoitureRepository voitureRepository;
+    private final PlaceRepository placeRepository;
 
-    // Génère le prochain ID au format VOIN001, VOIN002, ...
+    // generates the next ID in format VOIN001, VOIN002, ...
     private String generateId() {
         return voitureRepository.findTopByOrderByIdVoitDesc()
                 .map(v -> {
@@ -26,38 +30,53 @@ public class VoitureService {
                 .orElse("VOIN001");
     }
 
-    // Récupérer toutes les voitures
+    // validates that the type is not null
+    private void validerType(TypeVoiture type) {
+        if (type == null) {
+            log.warn("Attempt to insert a null type");
+            throw new AppException("Le type de voiture est obligatoire (choix : simple, premium ou VIP).");
+        }
+    }
+
+    // get all voitures
     public List<Voiture> getAllVoitures() {
         List<Voiture> voitures = voitureRepository.findAll();
-        log.info("Récupération de {} voitures avec succès", voitures.size());
+        log.info("Retrieved {} voitures successfully", voitures.size());
         return voitures;
     }
 
-    // Récupérer une voiture par ID
+    // get voiture by id
     public Voiture getVoitureById(String idVoit) {
         return voitureRepository.findById(idVoit)
                 .orElseThrow(() -> {
-                    log.error("Échec de la récupération : Voiture {} introuvable", idVoit);
+                    log.error("Voiture {} not found", idVoit);
                     return new AppException("Désolé, la voiture avec l'identifiant " + idVoit + " n'existe pas.");
                 });
     }
 
-    // Créer une nouvelle voiture
+    // create new voiture and automatically insert all seats as LIBRE
     public Voiture createVoiture(Voiture voiture) {
         validerType(voiture.getType());
-
         voiture.setIdVoit(generateId());
         Voiture savedVoiture = voitureRepository.save(voiture);
 
-        log.info("Succès : La voiture {} a été créée avec succès", savedVoiture.getIdVoit());
+        for (int i = 1; i <= savedVoiture.getNbrPlace(); i++) {
+            Place place = new Place();
+            place.setVoiture(savedVoiture);
+            place.setPlace(i);
+            place.setOccupation(OccupationStatus.LIBRE);
+            placeRepository.save(place);
+        }
+
+        log.info("Voiture {} created with {} seats", savedVoiture.getIdVoit(), savedVoiture.getNbrPlace());
         return savedVoiture;
     }
 
-    // Mettre à jour une voiture
+    // update voiture
     public Voiture updateVoiture(String idVoit, Voiture voitureDetails) {
         Voiture voiture = voitureRepository.findById(idVoit)
                 .orElseThrow(() -> {
-                    log.error("Échec de la mise à jour : Voiture {} introuvable", idVoit);
+                    log.error("Voiture {} not found for update", idVoit);
                     return new AppException("Impossible de mettre à jour : la voiture " + idVoit + " est inexistante.");
                 });
 
@@ -69,25 +88,17 @@ public class VoitureService {
         voiture.setFrais(voitureDetails.getFrais());
 
         Voiture updatedVoiture = voitureRepository.save(voiture);
-        log.info("Succès : La voiture {} a été mise à jour", idVoit);
+        log.info("Voiture {} updated successfully", idVoit);
         return updatedVoiture;
     }
 
-    // Supprimer une voiture
+    // delete voiture by id
     public void deleteVoiture(String idVoit) {
         if (!voitureRepository.existsById(idVoit)) {
-            log.error("Échec de la suppression : Voiture {} introuvable", idVoit);
+            log.error("Voiture {} not found for deletion", idVoit);
             throw new AppException("Erreur de suppression : la voiture " + idVoit + " n'a pas été trouvée.");
         }
         voitureRepository.deleteById(idVoit);
-        log.info("Succès : La voiture {} a été supprimée définitivement", idVoit);
-    }
-
-    // Validation du type
-    private void validerType(TypeVoiture type) {
-        if (type == null) {
-            log.warn("Tentative d'insertion d'un type nul");
-            throw new AppException("Le type de voiture est obligatoire (choix : simple, premium ou VIP).");
-        }
+        log.info("Voiture {} deleted successfully", idVoit);
     }
 }
