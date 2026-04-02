@@ -1,11 +1,12 @@
 package com.example.Gestiondereservationdesplacesunecooperative.entity;
 
 import com.example.Gestiondereservationdesplacesunecooperative.enums.OccupationStatus;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.Data;
 
 @Entity
-@Table(name = "places")
+@Table(name = "place")
 @IdClass(PlaceId.class)
 @Data
 public class Place {
@@ -13,6 +14,7 @@ public class Place {
     @Id
     @ManyToOne
     @JoinColumn(name = "id_voit", nullable = false)
+    @JsonIgnore  // prevents infinite loop when serializing to JSON
     private Voiture voiture;
 
     @Id

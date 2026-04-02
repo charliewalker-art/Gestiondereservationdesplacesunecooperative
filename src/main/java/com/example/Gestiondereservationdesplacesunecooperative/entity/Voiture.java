@@ -32,4 +32,9 @@ public class Voiture {
 
     @Column(name = "frais", nullable = false)
     private int frais;
+
+
+    // when a voiture is deleted, all its places are automatically deleted
+    @OneToMany(mappedBy = "voiture", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Place> places;
 }

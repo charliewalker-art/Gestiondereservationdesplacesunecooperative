@@ -72,7 +72,7 @@ public class VoitureService {
         return savedVoiture;
     }
 
-    // update voiture
+    // update voiture - nbrPlace cannot be modified
     public Voiture updateVoiture(String idVoit, Voiture voitureDetails) {
         Voiture voiture = voitureRepository.findById(idVoit)
                 .orElseThrow(() -> {
@@ -84,7 +84,7 @@ public class VoitureService {
 
         voiture.setDesign(voitureDetails.getDesign());
         voiture.setType(voitureDetails.getType());
-        voiture.setNbrPlace(voitureDetails.getNbrPlace());
+        // nbrPlace is intentionally not updated here
         voiture.setFrais(voitureDetails.getFrais());
 
         Voiture updatedVoiture = voitureRepository.save(voiture);
@@ -92,13 +92,13 @@ public class VoitureService {
         return updatedVoiture;
     }
 
-    // delete voiture by id
+    // delete voiture and all its places via cascade
     public void deleteVoiture(String idVoit) {
         if (!voitureRepository.existsById(idVoit)) {
             log.error("Voiture {} not found for deletion", idVoit);
             throw new AppException("Erreur de suppression : la voiture " + idVoit + " n'a pas été trouvée.");
         }
         voitureRepository.deleteById(idVoit);
-        log.info("Voiture {} deleted successfully", idVoit);
+        log.info("Voiture {} and all its places deleted successfully", idVoit);
     }
 }
