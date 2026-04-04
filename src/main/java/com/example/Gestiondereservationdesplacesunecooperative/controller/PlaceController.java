@@ -9,7 +9,7 @@ import java.util.List;
 @RestController
 @RequestMapping("/api/place")
 @RequiredArgsConstructor
-@CrossOrigin(origins = "*")
+@CrossOrigin(origins = "http://localhost:5173")
 public class PlaceController {
 
     private final PlaceService placeService;
@@ -24,5 +24,10 @@ public class PlaceController {
     @GetMapping("/{idVoit}/libre/count")
     public int countPlacesLibres(@PathVariable String idVoit) {
         return placeService.countPlacesLibres(idVoit);
+    }
+
+    @GetMapping("/{idVoit}/toutes")
+    public List<Place> getAllPlaces(@PathVariable String idVoit) {
+        return placeService.getAllPlacesByVoiture(idVoit);
     }
 }

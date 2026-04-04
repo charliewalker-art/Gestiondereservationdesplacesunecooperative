@@ -14,4 +14,6 @@ public interface PlaceRepository extends JpaRepository<Place, PlaceId> {
     List<Place> findByVoitureAndOccupation(Voiture voiture, OccupationStatus occupation);
 
     int countByVoitureAndOccupation(Voiture voiture, OccupationStatus occupation);
+
+    List<Place> findByVoiture(Voiture voiture);
 }

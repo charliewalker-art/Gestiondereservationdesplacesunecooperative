@@ -7,8 +7,9 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/clients")
+@RequestMapping("/api/client")
 @RequiredArgsConstructor
+@CrossOrigin(origins = "http://localhost:5173")
 public class ClientController {
 
     private final ClientService clientService;
@@ -42,5 +43,10 @@ public class ClientController {
     public String deleteClient(@PathVariable int idCli) {
         clientService.deleteClient(idCli);
         return "Client deleted successfully";
+    }
+
+    @GetMapping("/search")
+    public List<Client> searchClient(@RequestParam String query) {
+        return clientService.searchClient(query);
     }
 }

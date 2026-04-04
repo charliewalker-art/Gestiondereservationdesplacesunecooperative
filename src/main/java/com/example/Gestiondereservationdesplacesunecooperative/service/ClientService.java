@@ -64,4 +64,9 @@ public class ClientService {
         clientRepository.deleteById(idCli);
         log.info("Client {} deleted successfully", idCli);
     }
+
+
+    public List<Client> searchClient(String query) {
+        return clientRepository.findByNomContainingOrNumTel(query, query);
+    }
 }

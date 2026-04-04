@@ -34,4 +34,9 @@ public class PlaceService {
         Voiture voiture = findVoitureById(idVoit);
         return placeRepository.countByVoitureAndOccupation(voiture, OccupationStatus.LIBRE);
     }
+
+    public List<Place> getAllPlacesByVoiture(String idVoit) {
+        Voiture voiture = findVoitureById(idVoit);
+        return placeRepository.findByVoiture(voiture);
+    }
 }
