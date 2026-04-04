@@ -1,6 +1,7 @@
 package com.example.Gestiondereservationdesplacesunecooperative.controller;
 
 import com.example.Gestiondereservationdesplacesunecooperative.dto.DashboardDTO;
+import com.example.Gestiondereservationdesplacesunecooperative.dto.RecuDTO;
 import com.example.Gestiondereservationdesplacesunecooperative.dto.VoyageurDTO;
 import com.example.Gestiondereservationdesplacesunecooperative.entity.Reservation;
 import com.example.Gestiondereservationdesplacesunecooperative.service.ReservationService;
@@ -73,5 +74,10 @@ public class ReservationController {
     @GetMapping("/voyageurs/{idVoit}")
     public List<VoyageurDTO> getSuiviVoyageurs(@PathVariable String idVoit) {
         return reservationService.getSuiviVoyageurs(idVoit);
+    }
+
+    @GetMapping("/recu/{idReserv}")
+    public RecuDTO getRecu(@PathVariable String idReserv) {
+        return reservationService.getRecu(idReserv);
     }
 }

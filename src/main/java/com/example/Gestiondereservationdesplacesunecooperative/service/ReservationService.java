@@ -1,6 +1,7 @@
 package com.example.Gestiondereservationdesplacesunecooperative.service;
 
 import com.example.Gestiondereservationdesplacesunecooperative.dto.DashboardDTO;
+import com.example.Gestiondereservationdesplacesunecooperative.dto.RecuDTO;
 import com.example.Gestiondereservationdesplacesunecooperative.dto.VoyageurDTO;
 import com.example.Gestiondereservationdesplacesunecooperative.entity.*;
 import com.example.Gestiondereservationdesplacesunecooperative.enums.OccupationStatus;
@@ -15,6 +16,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 
 @Service
@@ -195,6 +197,7 @@ public class ReservationService {
         List<Reservation> reservations = reservationRepository.findByVoiture(voiture);
         return reservations.stream().map(r -> {
             VoyageurDTO dto = new VoyageurDTO();
+            dto.setIdReserv(r.getIdReserv()); // ajouter cette ligne
             dto.setPlace(r.getPlace());
             dto.setNomClient(r.getClient().getNom());
             dto.setNumTel(r.getClient().getNumTel());
@@ -213,6 +216,27 @@ public class ReservationService {
         dashboard.setTotalToutPaye(reservationRepository.countByVoitureAndPayment(voiture, PaymentType.TOUT_PAYE));
         dashboard.setTotalResteAPayer(dashboard.getTotalPassagers() - dashboard.getTotalToutPaye());
         return dashboard;
+    }
+
+    public RecuDTO getRecu(String idReserv) {
+        Reservation reservation = reservationRepository.findById(idReserv)
+                .orElseThrow(() -> new AppException("Reservation " + idReserv + " introuvable."));
+
+        RecuDTO recu = new RecuDTO();
+        recu.setIdReserv(reservation.getIdReserv());
+        recu.setDateReserv(reservation.getDateReserv().format(DateTimeFormatter.ofPattern("dd MMMM yyyy HH:mm")));
+        recu.setDateVoyage(reservation.getDateVoyage().format(DateTimeFormatter.ofPattern("dd MMMM yyyy")));
+        recu.setNomClient(reservation.getClient().getNom());
+        recu.setContact(reservation.getClient().getNumTel());
+        recu.setIdVoiture(reservation.getVoiture().getIdVoit());
+        recu.setTypeVoiture(reservation.getVoiture().getType().toString());
+        recu.setPlace(reservation.getPlace());
+        recu.setFrais(reservation.getVoiture().getFrais());
+        recu.setPayment(reservation.getPayment().toString().replace("_", " "));
+        recu.setMontantAvance(reservation.getMontantAvance());
+        recu.setResteAPayer(reservation.getVoiture().getFrais() - reservation.getMontantAvance());
+
+        return recu;
     }
 
 }

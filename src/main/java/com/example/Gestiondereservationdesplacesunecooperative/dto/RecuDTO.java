@@ -1,16 +1,19 @@
 package com.example.Gestiondereservationdesplacesunecooperative.dto;
 
-import com.example.Gestiondereservationdesplacesunecooperative.enums.PaymentType;
 import lombok.Data;
 
 @Data
-public class VoyageurDTO {
-    private int place;
+public class RecuDTO {
     private String idReserv;
+    private String dateReserv;
+    private String dateVoyage;
     private String nomClient;
-    private String numTel;
-    private PaymentType statutPaiement;
+    private String contact;
+    private String idVoiture;
+    private String typeVoiture;
+    private int place;
     private int frais;
+    private String payment;
     private int montantAvance;
     private int resteAPayer;
 }
