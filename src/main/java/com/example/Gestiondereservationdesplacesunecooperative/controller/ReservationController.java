@@ -80,4 +80,10 @@ public class ReservationController {
     public RecuDTO getRecu(@PathVariable String idReserv) {
         return reservationService.getRecu(idReserv);
     }
+
+    // retourne la recette totale accumulee par la cooperative
+    @GetMapping("/recette-totale")
+    public int getTotalRecette() {
+        return reservationService.getTotalRecetteAccumulee();
+    }
 }

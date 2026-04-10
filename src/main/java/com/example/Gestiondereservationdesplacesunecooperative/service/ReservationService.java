@@ -298,4 +298,10 @@ public class ReservationService {
         return recu;
     }
 
+
+    public int getTotalRecetteAccumulee() {
+        Integer total = reservationRepository.sumAllRecettes();
+        return (total != null) ? total : 0;
+    }
+
 }

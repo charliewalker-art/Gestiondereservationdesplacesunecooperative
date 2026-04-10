@@ -4,6 +4,7 @@ import com.example.Gestiondereservationdesplacesunecooperative.entity.Reservatio
 import com.example.Gestiondereservationdesplacesunecooperative.entity.Voiture;
 import com.example.Gestiondereservationdesplacesunecooperative.entity.Client;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 import java.util.List;
 import java.util.Optional;
@@ -26,4 +27,7 @@ public interface ReservationRepository extends JpaRepository<Reservation, String
 
     int countByVoiture(Voiture voiture);
     int countByVoitureAndPayment(Voiture voiture, PaymentType payment);
+
+    @Query("SELECT SUM(r.montantAvance) FROM Reservation r")
+    Integer sumAllRecettes();
 }
