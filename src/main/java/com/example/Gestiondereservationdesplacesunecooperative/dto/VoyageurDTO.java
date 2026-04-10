@@ -13,4 +13,5 @@ public class VoyageurDTO {
     private int frais;
     private int montantAvance;
     private int resteAPayer;
+    private String dateVoyage;
 }

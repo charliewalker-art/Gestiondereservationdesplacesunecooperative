@@ -150,7 +150,12 @@ public class ReservationService {
      * Met a jour le type de paiement d'une reservation existante.
      * Seul le paiement et le montant avance peuvent etre modifies.
      */
+    /**
+     * Met a jour une reservation existante.
+     * Permet de modifier le paiement, le montant et la PLACE.
+     */
     public Reservation updateReservation(String idReserv, Reservation reservationDetails) {
+        // 1. Chercher la reservation existante
         Reservation reservation = reservationRepository.findById(idReserv)
                 .orElseThrow(() -> {
                     log.error("Reservation {} introuvable pour mise a jour", idReserv);
@@ -159,11 +164,56 @@ public class ReservationService {
 
         validerPaiement(reservationDetails.getPayment());
 
+        // 2. Gérer le changement de PLACE si nécessaire
+        int anciennePlaceNum = reservation.getPlace();
+        int nouvellePlaceNum = reservationDetails.getPlace();
+        String idVoit = reservation.getVoiture().getIdVoit();
+
+        if (anciennePlaceNum != nouvellePlaceNum) {
+            log.info("Changement de place detecte pour RES {}: {} -> {}", idReserv, anciennePlaceNum, nouvellePlaceNum);
+
+            // A. Verifier si la NOUVELLE place est disponible
+            PlaceId newPlaceId = new PlaceId();
+            newPlaceId.setVoiture(idVoit);
+            newPlaceId.setPlace(nouvellePlaceNum);
+
+            Place nouvellePlace = placeRepository.findById(newPlaceId)
+                    .orElseThrow(() -> new AppException("La place " + nouvellePlaceNum + " n'existe pas pour cette voiture."));
+
+            if (nouvellePlace.getOccupation() == OccupationStatus.OCCUPE) {
+                throw new AppException("La place " + nouvellePlaceNum + " est deja occupee par un autre client.");
+            }
+
+            // B. Liberer l'ANCIENNE place
+            PlaceId oldPlaceId = new PlaceId();
+            oldPlaceId.setVoiture(idVoit);
+            oldPlaceId.setPlace(anciennePlaceNum);
+
+            Place anciennePlace = placeRepository.findById(oldPlaceId)
+                    .orElseThrow(() -> new AppException("Erreur critique : ancienne place introuvable."));
+
+            anciennePlace.setOccupation(OccupationStatus.LIBRE);
+            placeRepository.save(anciennePlace);
+
+            // C. Occuper la NOUVELLE place
+            nouvellePlace.setOccupation(OccupationStatus.OCCUPE);
+            placeRepository.save(nouvellePlace);
+
+            // D. Mettre a jour le numero de place dans la reservation
+            reservation.setPlace(nouvellePlaceNum);
+        }
+
+        // 3. Mettre a jour les autres champs (paiement, montant, date voyage)
         reservation.setPayment(reservationDetails.getPayment());
         reservation.setMontantAvance(reservationDetails.getMontantAvance());
 
+        // Optionnel : permettre aussi de modifier la date du voyage
+        if (reservationDetails.getDateVoyage() != null) {
+            reservation.setDateVoyage(reservationDetails.getDateVoyage());
+        }
+
         Reservation updated = reservationRepository.save(reservation);
-        log.info("Reservation {} mise a jour avec succes", idReserv);
+        log.info("Reservation {} mise a jour avec succes (Nouvelle place: {})", idReserv, updated.getPlace());
         return updated;
     }
 
@@ -195,9 +245,10 @@ public class ReservationService {
     public List<VoyageurDTO> getSuiviVoyageurs(String idVoit) {
         Voiture voiture = findVoiture(idVoit);
         List<Reservation> reservations = reservationRepository.findByVoiture(voiture);
+
         return reservations.stream().map(r -> {
             VoyageurDTO dto = new VoyageurDTO();
-            dto.setIdReserv(r.getIdReserv()); // ajouter cette ligne
+            dto.setIdReserv(r.getIdReserv());
             dto.setPlace(r.getPlace());
             dto.setNomClient(r.getClient().getNom());
             dto.setNumTel(r.getClient().getNumTel());
@@ -205,6 +256,14 @@ public class ReservationService {
             dto.setFrais(voiture.getFrais());
             dto.setMontantAvance(r.getMontantAvance());
             dto.setResteAPayer(voiture.getFrais() - r.getMontantAvance());
+
+
+            // On récupère la date de la réservation et on la transforme en texte
+            if (r.getDateVoyage() != null) {
+                dto.setDateVoyage(r.getDateVoyage().format(DateTimeFormatter.ofPattern("dd/MM/yyyy")));
+            }
+            // -------------------------------------
+
             return dto;
         }).collect(java.util.stream.Collectors.toList());
     }
