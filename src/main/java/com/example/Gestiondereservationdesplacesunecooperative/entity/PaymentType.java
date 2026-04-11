@@ -1,4 +1,4 @@
-package com.example.Gestiondereservationdesplacesunecooperative.enums;
+package com.example.Gestiondereservationdesplacesunecooperative.entity;
 
 public enum PaymentType {
     SANS_AVANCE,

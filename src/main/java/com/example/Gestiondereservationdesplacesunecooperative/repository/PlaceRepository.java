@@ -3,7 +3,7 @@ package com.example.Gestiondereservationdesplacesunecooperative.repository;
 import com.example.Gestiondereservationdesplacesunecooperative.entity.Place;
 import com.example.Gestiondereservationdesplacesunecooperative.entity.PlaceId;
 import com.example.Gestiondereservationdesplacesunecooperative.entity.Voiture;
-import com.example.Gestiondereservationdesplacesunecooperative.enums.OccupationStatus;
+import com.example.Gestiondereservationdesplacesunecooperative.entity.OccupationStatus;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 import java.util.List;
