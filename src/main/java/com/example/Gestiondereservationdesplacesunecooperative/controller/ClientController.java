@@ -9,7 +9,7 @@ import java.util.List;
 @RestController
 @RequestMapping("/api/client")
 @RequiredArgsConstructor
-@CrossOrigin(origins = "http://localhost:5173")
+@CrossOrigin(origins = "${app.cors.origin}")
 public class ClientController {
 
     private final ClientService clientService;
