@@ -8,7 +8,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 import java.util.List;
 import java.util.Optional;
-import com.example.Gestiondereservationdesplacesunecooperative.enums.PaymentType;
+import com.example.Gestiondereservationdesplacesunecooperative.entity.PaymentType;
 
 @Repository
 public interface ReservationRepository extends JpaRepository<Reservation, String> {

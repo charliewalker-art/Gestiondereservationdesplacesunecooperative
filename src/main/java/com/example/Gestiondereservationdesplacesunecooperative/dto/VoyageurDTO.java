@@ -1,6 +1,6 @@
 package com.example.Gestiondereservationdesplacesunecooperative.dto;
 
-import com.example.Gestiondereservationdesplacesunecooperative.enums.PaymentType;
+import com.example.Gestiondereservationdesplacesunecooperative.entity.PaymentType;
 import lombok.Data;
 
 @Data

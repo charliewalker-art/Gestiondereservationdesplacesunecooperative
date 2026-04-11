@@ -4,13 +4,15 @@ import com.example.Gestiondereservationdesplacesunecooperative.dto.DashboardDTO;
 import com.example.Gestiondereservationdesplacesunecooperative.dto.RecuDTO;
 import com.example.Gestiondereservationdesplacesunecooperative.dto.VoyageurDTO;
 import com.example.Gestiondereservationdesplacesunecooperative.entity.*;
-import com.example.Gestiondereservationdesplacesunecooperative.enums.OccupationStatus;
-import com.example.Gestiondereservationdesplacesunecooperative.enums.PaymentType;
+import com.example.Gestiondereservationdesplacesunecooperative.entity.OccupationStatus;
+import com.example.Gestiondereservationdesplacesunecooperative.entity.PaymentType;
 import com.example.Gestiondereservationdesplacesunecooperative.exception.AppException;
 import com.example.Gestiondereservationdesplacesunecooperative.repository.ClientRepository;
 import com.example.Gestiondereservationdesplacesunecooperative.repository.PlaceRepository;
 import com.example.Gestiondereservationdesplacesunecooperative.repository.ReservationRepository;
 import com.example.Gestiondereservationdesplacesunecooperative.repository.VoitureRepository;
+
+
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

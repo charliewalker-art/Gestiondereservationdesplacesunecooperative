@@ -3,7 +3,7 @@ package com.example.Gestiondereservationdesplacesunecooperative.service;
 import com.example.Gestiondereservationdesplacesunecooperative.entity.Place;
 import com.example.Gestiondereservationdesplacesunecooperative.entity.Voiture;
 import com.example.Gestiondereservationdesplacesunecooperative.entity.TypeVoiture;
-import com.example.Gestiondereservationdesplacesunecooperative.enums.OccupationStatus;
+import com.example.Gestiondereservationdesplacesunecooperative.entity.OccupationStatus;
 import com.example.Gestiondereservationdesplacesunecooperative.exception.AppException;
 import com.example.Gestiondereservationdesplacesunecooperative.repository.PlaceRepository;
 import com.example.Gestiondereservationdesplacesunecooperative.repository.VoitureRepository;

@@ -1,6 +1,6 @@
 package com.example.Gestiondereservationdesplacesunecooperative.entity;
 
-import com.example.Gestiondereservationdesplacesunecooperative.enums.PaymentType;
+import com.example.Gestiondereservationdesplacesunecooperative.entity.PaymentType;
 import jakarta.persistence.*;
 import lombok.Data;
 import java.time.LocalDate;

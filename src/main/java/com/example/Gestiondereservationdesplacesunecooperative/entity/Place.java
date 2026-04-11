@@ -1,6 +1,6 @@
 package com.example.Gestiondereservationdesplacesunecooperative.entity;
 
-import com.example.Gestiondereservationdesplacesunecooperative.enums.OccupationStatus;
+import com.example.Gestiondereservationdesplacesunecooperative.entity.OccupationStatus;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.Data;
